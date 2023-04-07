@@ -1,13 +1,14 @@
-import { useEffect, useState, useContext } from "react";
-import { Link } from "react-router-dom"
-import { useParams, useNavigate } from "react-router-dom";
+import { useEffect, useState} from "react";
+import { useParams, useNavigate, Link } from "react-router-dom";
 
 import { useService } from "../../hooks/useService";
 import { carServiceFactory } from '../../services/carService';
-import { AuthContext } from "../../contexts/AuthContext";
+import { useAuthContext } from "../../contexts/AuthContext";
+import { useCarContext } from "../../contexts/CarContext";
 
 export const Details = () => {
-    const { userId } = useContext(AuthContext);
+    const { userId } = useAuthContext();
+    const { deleteCar } = useCarContext();
     const { carId } = useParams();
     const [carDetail, setCarDetail] = useState({});
     const carService = useService(carServiceFactory)
@@ -24,11 +25,15 @@ export const Details = () => {
     const isOwner = carDetail._ownerId === userId;
 
     const onDeleteClick = async () => {
-        carService.delete(carDetail._id);
+        const result = window.confirm(`Are you sure you want to delete ${carDetail.name} ${carDetail.model}`);
+        
+        if (result) {
+            await carService.delete(carDetail._id);
 
-        navigate('/catalog');
+            deleteCar(carDetail._id);
 
-        window.location.reload(true);
+            navigate('/catalog');
+        }
     };
 
     return (

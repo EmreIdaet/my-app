@@ -1,6 +1,9 @@
-import { Routes, Route} from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
+import { RouteGuard } from './component/common/RouteGuard';
+import { CarOwner } from './component/common/CarOwner';
 
 import { AuthProvider } from './contexts/AuthContext';
+import { CarProvider } from './contexts/CarContext';
 
 import './App.css';
 import { Header } from './component/Header/Header';
@@ -17,21 +20,30 @@ import { Create } from './component/Create/Create';
 function App() {
   return (
     <AuthProvider>
-      <Header />
+      <CarProvider>
+        <Header />
 
-      <Routes>
-        <Route path='/' element={<Home />} />
-        <Route path='/login' element={<Login />} />
-        <Route path='/logout' element={<Logout />} />
-        <Route path='/register' element={<Register />} />
-        <Route path='/create' element={<Create />} />
-        <Route path='/catalog' element={<Catalog />} />
+        <Routes>
+          <Route path='/' element={<Home />} />
+          <Route path='/login' element={<Login />} />
+          <Route path='/register' element={<Register />} />
+          <Route path='/catalog' element={<Catalog />} />
+          <Route path='/catalog/:carId' element={<Details />} />
 
-        <Route path='/catalog/:carId' element={<Details />} />
-        <Route path='/catalog/:carId/edit' element={<Edit />} />
-      </Routes>
+          <Route element={<RouteGuard />}>
+            <Route path='/catalog/:carId/edit' element={
+              <CarOwner>
+                <Edit />
+              </CarOwner>
+            } />
 
-      <Footer />
+            <Route path='/create' element={<Create />} />
+            <Route path='/logout' element={<Logout />} />
+          </Route>
+        </Routes>
+
+        <Footer />
+      </CarProvider>
     </AuthProvider>
   );
 }

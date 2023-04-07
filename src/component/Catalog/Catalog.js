@@ -1,9 +1,9 @@
-import { useAuthContext } from "../../contexts/AuthContext"
+import { useCarContext } from "../../contexts/CarContext"
+
 import { CatalogItem } from "./CatalogItem/CatalogItem"
 
-
 export const Catalog = () => {
-    const { cars} = useAuthContext();
+    const { cars } = useCarContext();
     return (
         <section id="catalog">
             <h1>Cars Catalog</h1>
